@@ -1,7 +1,38 @@
+mod actions;
 mod client;
-//use client::Log;
-fn main(){
-//   let mut log: Log = Log::from_str("20.5.2024: +500");
-  // log.push("30-7-24", -67);
-//   println!("{:#?}", log);
+use std::env;
+use std::process;
+
+use actions::log::LogAction;
+fn main() {
+    let args = env::args().skip(1).collect::<Vec<_>>();
+    // if command not provided
+    if args.get(0).is_none() {
+        not_enough_arg_err();
+    }
+
+    if args[0] == "query" {
+        // if client's name not provided
+        if args.get(1).is_none() {
+            not_enough_arg_err();
+        }
+        actions::query(args[1].as_str());
+        return;
+    }
+    if args[0] == "log" {
+        // if the length of argument is less than 5
+        if args.get(4).is_none() {
+            not_enough_arg_err();
+        }
+        let log_action = LogAction::from_args(&args[2..]);
+        actions::log(args[1].as_str(), log_action);
+        return;
+    }
+    eprintln!("invalid arguments");
+    process::exit(1);
+}
+
+fn not_enough_arg_err() {
+    eprintln!("not enough arguments");
+    process::exit(1);
 }
