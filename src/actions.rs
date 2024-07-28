@@ -55,9 +55,10 @@ pub fn log(name: &str, action: LogAction) {
     }
     let mut path = Path::new("./.logs").join(name);
     path.set_extension("paylog");
-    fs::write(path, client.export()).unwrap_or_else(|_| {
+    fs::write(path, client.export()).unwrap_or_else(|e| {
+        eprintln!("{:?}", e);
         eprintln!("error writing file");
         process::exit(1);
     });
-    println!("Done ✅ \nNew Entries:\n {}", client.display());
+    println!("Done ✅ \nNew Entries:\n{}", client.display());
 }

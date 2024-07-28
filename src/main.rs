@@ -1,10 +1,18 @@
 mod actions;
 mod client;
-use std::env;
+use std::{env, fs};
 use std::process;
 
 use actions::log::LogAction;
 fn main() {
+    fs::create_dir("./.logs").unwrap_or_else(|e| {
+        match e.kind() {
+            std::io::ErrorKind::AlreadyExists => {}
+            _ => {
+                eprintln!("couldn't initialize the app (error writing logs directory)");
+            }
+        }
+    });
     let args = env::args().skip(1).collect::<Vec<_>>();
     // if command not provided
     if args.get(0).is_none() {
